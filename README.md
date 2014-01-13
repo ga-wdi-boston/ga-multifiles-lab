@@ -92,43 +92,39 @@ Problem with Kernel#relative is that the relative path is relative to where ruby
 In the show_person.rb file we use this require to try to load the Person class.
 
 <code>
-require './lib/person'
-...
+require '../lib/person'
 </code>
 
-When we run this in the root directory of this project it will work. Because it's looking for the file defining the Person class, person.rb, in the child directory 'lib'.
 
 <code>
 $ ruby bin/show_person.rb
 </code>
 
-OK, if we run it in the root directory
+When we run this in the root directory of this project it WILL NOT work. Because it will go up one directory, '..', and look for the lib directory. Since the parent directory of this root directory does not have a lib directory the require will fail.
 
 <code>
 $ cd bin
 </code>
 
-If we cd into the bin directory and try to run this it will fail.
 
 <code>
 $ ruby show_person.rb
 </code>
 
-Fails, it's looking for the file in bin/lib/person.rb
-    `require': cannot load such file -- ./lib/person (LoadError)
+If we cd into the bin directory and try to run this it WILL work. Because it will look into the parent directory of this bin directory, look for the lib directory (which it will find), then load the person.rb from the lib directory.
 
-The fix is to use require_relative. This will try to find the file relative to the file that has that has the require_relative statement.
+To be able to run this ruby file from anywhere we need to use require_relative. This will try to find the file we are requiring relative to the file that has that has the require_relative statement.
 
 <ul>In bin/show_person.rb:
 <li>uncomment require_relative '../lib/person'</li>
-<li>comment out require './lib/person'</li>
+<li>comment out require '../lib/person'</li>
 </ul>
 
 <code>
 $ ruby bin/show_person.rb
 </code>
 
-Still OK, if run it in the root directory.
+OK if we run from the root directory.
 
 <code>
 $ cd bin
@@ -138,7 +134,7 @@ $ cd bin
 $ ruby show_person.rb  
 </code>
 
-Still OK
+Still OK, remember require failed if we tryed to run it in the bin directory.
 
 <code>
 $ cd ../tmp
@@ -148,9 +144,9 @@ $ cd ../tmp
 $ ruby ../bin/show_person.rb
 </code>
 
-Still OK.
+Still OK, running from the tmp directory.
 
-You may run across an older hack for this problem. It adds the current directory of the file in the Ruby load path. DON'T USE THIS.
+You may run across an older hack, pre ruby 1.9.0, for this problem. It adds the current directory of the file in the Ruby load path. DON'T USE THIS.
 
 <code>
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
@@ -170,10 +166,9 @@ $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 ### Create a make_voters.rb file in the bin directory. 
 This will create voters of different ages, some to young to vote.
 
-* In the lib/make_voters.rb file add this to the top of file. require '../lib/person'
+* In the bin/make_voters.rb file add this to the top of file. require '../lib/person'
 * Run the command from the root directory "ruby bin/make_voters.rb"  
 * Run the command from the bin directory "cd bin; ruby make_voters.rb"
 * Run the command from your HOME directory "cd ~; ruby your path here/make_voters.rb"
 * Change the require in this file to require_relative and do the above.
 
-* 
