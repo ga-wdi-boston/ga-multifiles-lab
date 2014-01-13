@@ -170,7 +170,7 @@ $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 ### Create a make_voters.rb file in the bin directory. 
 This will create voters of different ages, some to young to vote.
 
-* In the lib/make_voters.rb file add this to the top of file. require '../lib/person'
+* In the bin/make_voters.rb file add this to the top of file. require '../lib/person'
 * Run the command from the root directory "ruby bin/make_voters.rb"  
 * Run the command from the bin directory "cd bin; ruby make_voters.rb"
 * Run the command from your HOME directory "cd ~; ruby your path here/make_voters.rb"
