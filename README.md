@@ -5,7 +5,21 @@ load, autoload, require and require_relative.
 
 #### Load Path
 Ruby will look in it's $LOAD_PATH global variable for a list of 
-directories to look for ruby files.
+directories to look for ruby files. A ruby file must be loaded by using
+'load', 'require' or 'require_relative'. 
+
+$LOAD_PATH is an array of strings that are paths of directories
+used to look for ruby file.
+
+Installing a gem, such as pry, will add a path to the $LOAD_PATH.
+
+For example, my $LOAD_PATH has the entry  "/Users/tdyer/.rvm/gems/ruby-2.0.0-p353/gems/pry-0.9.12.4/lib". 
+So, when I use 'require pry' in a ruby file it will attempt to load the file.
+"/Users/tdyer/.rvm/gems/ruby-2.0.0-p353/gems/pry-0.9.12.4/lib/pry.rb"
+
+By convention this pry.rb file will require all the other files needed by pry.
+
+
 
 ***Open pry and look at the $LOAD_PATH***
 
@@ -15,6 +29,12 @@ pry(main)> $LOAD_PATH
 
 <code>
 pry(main)> $:
+</code>
+
+To load all the ruby files needed by pry.
+
+<code>
+pry(main)> require 'pry'
 </code>
 
 #### Kernel#load
@@ -30,7 +50,7 @@ change the file
 pry(main)> load './calendar.rb'
 </code>
 
-notice the changes
+notice the changes have been picked up.
 
 <code>
 pry(main)> load './calendar'
@@ -38,12 +58,18 @@ pry(main)> load './calendar'
 
 Must have the .rb on the file name to load.
 
-#### Kernel#require
-This will load a ruby file ONCE. All subsequent require statements will not
-load the file.
+> Load is typically used for checking for small changes and debugging
 
-*Doesn't need the .rb file extension, but won't hurt if it's there.
-*Does need the relative path './'.
+#### Kernel#require
+This will load a ruby file ONCE and only once. All subsequent require statements will not reload the file.
+
+This will look for the ruby file in.
+    
+    1. The $LOAD_PATH
+    2. Relative to the CURRENT DIRECTORY.
+
+* Doesn't need the .rb file extension, but won't hurt if it's there.
+* Does need the relative path './'.
 
 <code>
 pry(main)> require './calendar'
@@ -55,7 +81,10 @@ change the file
 pry(main)> require './calendar'
 </code>
 
-notice the changes are NOT seen!
+notice the changes are NOT seen and false is returned.
+
+> Use require for gems. For example, 'require pry'
+
 
 #### Kernel#require_relative
 Problem with Kernel#relative is that the relative path is relative to where ruby was invoked/executed. Its not relative to where the file resides.
